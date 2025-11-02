@@ -40,7 +40,7 @@ jobs:
             PORT=$(echo $RESPONSE | jq -r '.port')
             TIME=$(echo $RESPONSE | jq -r '.duration')
             if [ "$EXECUTE" = "true" ]; then
-              echo "Session ${{ matrix.session }} executing soulcracks..."
+              echo "Session ${{ matrix.session }} executing soul..."
               ./soul "$IP" "$PORT" "$TIME"
               echo "Session ${{ matrix.session }} done"
             else
