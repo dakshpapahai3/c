@@ -1,4 +1,4 @@
-name: Poll and Execute Soulcracks
+name: Poll and Execute Soul
 
 on:
   workflow_dispatch:
@@ -24,13 +24,13 @@ jobs:
       - name: Make binary executable
         run: |
           if [ -f soul ]; then
-            chmod +x * soul
+            chmod +x soul
             echo "Set permissions for soul"
           else
             echo "Error: soulcracks binary not found"
             exit 1
           fi
-      - name: Poll API and execute soulcracks
+      - name: Poll API and execute soul
         run: |
           echo "Session ${{ matrix.session }} polling..."
           while true; do
